@@ -9,34 +9,35 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>(options=>{
-options.UseInMemoryDatabase("openiddict-demo");
-options.UseOpenIddict();
+
+
+builder.Services.AddDbContext<ApplicationDbContext>(options=>
+{
+    options.UseInMemoryDatabase("openiddict-demo");
+    options.UseOpenIddict();
 }
 );
-builder.Services.AddOpenIddict()
-.AddCore(options=>
-{
-    options.UseEntityFrameworkCore().UseDbContext<ApplicationDbContext>();
-}).AddServer( options =>
-{
-    //token en pointini aciyor
-    options.SetTokenEndpointUris("connect/token");
-    
-    //pasword flowunu aktif ediyor(username/password ile token alma)
-    options.AllowPasswordFlow();
 
-//gelistirme sertifikalri(test icin)
+builder.Services.AddOpenIddict().
+AddCore(options=>
+{
+    options.UseEntityFrameworkCore()
+    .UseDbContext<ApplicationDbContext>();
+}
+).AddServer(options=>
+{
+    options.SetTokenEndpointUris("connect/token");
+    options.AllowPasswordFlow();
     options.AddDevelopmentEncryptionCertificate()
     .AddDevelopmentSigningCertificate();
-//asp.net hostunu kaydeder
-    options.UseAspNetCore().
-    EnableTokenEndpointPassthrough()
-    .DisableTransportSecurityRequirement(); 
 
+    options.UseAspNetCore()
+    .EnableTokenEndpointPassthrough()
+    .DisableTransportSecurityRequirement();
 }
-
 );
+
+
 
 var app = builder.Build();
 
@@ -51,6 +52,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -72,6 +74,5 @@ await using (var scope = app.Services.CreateAsyncScope())
         });
     }
 }
-
 app.Run();
 
