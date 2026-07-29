@@ -41,14 +41,27 @@ namespace openiddictAPI.controller
                 }
                 var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType,
                Claims.Name,
-               Claims.Role );
+               Claims.Role);
 
-               identity.SetClaim(Claims.Subject ,request.Username);
-               identity.SetClaim(Claims.Name, request.Username);
-               identity.SetDestinations(static claim => [Destinations.AccessToken]);
+                identity.SetClaim(Claims.Subject, request.Username);
+                identity.SetClaim(Claims.Name, request.Username);
+                identity.SetDestinations(static claim => [Destinations.AccessToken]);
 
-               return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(identity);
+                claimsPrincipal.SetScopes(request.GetScopes());
 
+                return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            }
+            else if (request.IsRefreshTokenGrantType())
+            {
+                // Refresh token ile gelen isteği doğrula.
+                // OpenIddict, refresh token'ın geçerliliğini (süresi dolmuş mu, iptal edilmiş mi vs.)
+                // otomatik kontrol eder; bu satır sadece daha önce token'a gömülen
+                // kimlik bilgilerini (claim'leri) geri getirir.
+                var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+                // Aynı kimlik bilgileriyle yeni bir access token (ve istenirse yeni bir refresh token) üret.
+                return SignIn(result.Principal!, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
             throw new NotImplementedException("bu grant type desteklenmiyor : Grant type (yetkilendirme türü), OAuth 2.0 protokolünde bir uygulamanın kullanıcıdan veya sistemden erişim izni (token) alırken kullandığı yöntemdir");
         }

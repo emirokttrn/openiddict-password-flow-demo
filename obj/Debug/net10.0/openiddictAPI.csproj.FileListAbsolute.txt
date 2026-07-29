@@ -74,3 +74,4 @@
 /Users/emirokttrn/servis/openiddictAPI/obj/Debug/net10.0/openiddictAPI.pdb
 /Users/emirokttrn/servis/openiddictAPI/obj/Debug/net10.0/openiddictAPI.genruntimeconfig.cache
 /Users/emirokttrn/servis/openiddictAPI/obj/Debug/net10.0/ref/openiddictAPI.dll
+/Users/emirokttrn/servis/openiddictAPI/obj/Debug/net10.0/openiddictAPI.sourcelink.json

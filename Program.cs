@@ -11,7 +11,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options=>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseInMemoryDatabase("openiddict-demo");
     options.UseOpenIddict();
@@ -19,17 +19,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>
 );
 
 builder.Services.AddOpenIddict().
-AddCore(options=>
+AddCore(options =>
 {
     options.UseEntityFrameworkCore()
     .UseDbContext<ApplicationDbContext>();
 }
-).AddServer(options=>
+).AddServer(options =>
 {
     options.SetTokenEndpointUris("connect/token");
     options.AllowPasswordFlow();
+    options.AllowRefreshTokenFlow();
+options.RegisterScopes(OpenIddictConstants.Scopes.OfflineAccess);
+
+
     options.AddDevelopmentEncryptionCertificate()
-    .AddDevelopmentSigningCertificate();
+   .AddDevelopmentSigningCertificate();
 
     options.UseAspNetCore()
     .EnableTokenEndpointPassthrough()
@@ -69,7 +73,10 @@ await using (var scope = app.Services.CreateAsyncScope())
             Permissions =
             {
                 Permissions.Endpoints.Token,
-                Permissions.GrantTypes.Password
+                Permissions.GrantTypes.Password,
+                Permissions.GrantTypes.RefreshToken,
+                 Permissions.Prefixes.Scope + Scopes.OfflineAccess
+
             }
         });
     }

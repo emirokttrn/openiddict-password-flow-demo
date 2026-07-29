@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("openiddictAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1560e9b853a03b88c8f17c4627f703fae79c2120")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c069069af7ffbbad910c6a74276e90e1abd3bbfe")]
 [assembly: System.Reflection.AssemblyProductAttribute("openiddictAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("openiddictAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
